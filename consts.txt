@@ -1,0 +1,4 @@
+door=5=1000
+corner_element=1=400
+pillar=0.2=100
+wire=2=50
