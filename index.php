@@ -11,65 +11,68 @@ if (isset($_GET['submit'])) {
     $b1 = $_GET["point-B-latitude"];
     $b2 = $_GET["point-B-longitude"];
 
-    if ($a1 == "" || $a2 == "" || $b1 == "" || $b2 == "") {
-        echo "empty value(s)";
-    } else {
-        if ((($a1 > -90 && $a1 < 90) && ($b1 > -90 && $b1 < 90)) && (($a2 > -180 && $a2 < 180) && ($b2 > -180 && $b2 < 180))) {
-            $c1 = $b1;
-            $c2 = $a2;
-            $d1 = $a1;
-            $d2 = $b2;
-        } else {
-            echo "wrong input(s)";
+    try {
+        if (is_numeric($a1) && is_numeric($a2) && is_numeric($b1) && is_numeric($b2)) {
+            if ((($a1 > -90 && $a1 < 90) && ($b1 > -90 && $b1 < 90)) && (($a2 > -180 && $a2 < 180) && ($b2 > -180 && $b2 < 180))) {
+                $c1 = $b1;
+                $c2 = $a2;
+                $d1 = $a1;
+                $d2 = $b2;
+
+                // constants
+                $door_size = 0;
+                $corner_element_size = 0;
+                $pillar_size = 0;
+                $wire_size = 0;
+
+                $door_price = 0;
+                $corner_element_price = 0;
+                $pillar_price = 0;
+                $wire_price = 0;
+
+                // file handling
+                $file_handle = fopen("consts.txt", "rb");
+
+                while (!feof($file_handle)) {
+
+                    $line_of_text = fgets($file_handle);
+                    $parts = explode('=', $line_of_text);
+
+                    switch ($parts[0]) {
+                        case "door":
+                            $door_size = (float)$parts[1];
+                            $door_price = (float)$parts[2];
+                            break;
+                        case "corner_element":
+                            $corner_element_size = (float)$parts[1];
+                            $corner_element_price = (float)$parts[2];
+                            break;
+                        case "pillar":
+                            $pillar_size = (float)$parts[1];
+                            $pillar_price = (float)$parts[2];
+                            break;
+                        case "wire":
+                            $wire_size = (float)$parts[1];
+                            $wire_price = (float)$parts[2];
+                            break;
+                    }
+                }
+                fclose($file_handle);
+
+
+                // calculating
+                $perimeter = perimeter($a1, $a2, $d1, $d2, $c1, $c2);
+                $remainder = $perimeter - (($door_size * 4) + ($corner_element_size * 4) + ($pillar_size * 8));
+                $wire_pillar = $remainder / 2.2;
+                $ceil_wire_pillar = ceil($wire_pillar);
+                $eur = (4 * $door_price) + (4 * $corner_element_price) + ((8 + $ceil_wire_pillar) * $pillar_price) + ($ceil_wire_pillar * $wire_price);
+            } else {
+                echo "wrong input(s)";
+            }
         }
+    } catch (Exception $e) {
+        echo 'Message: ' . $e->getMessage();
     }
-    // constants
-    $door_size = 0;
-    $corner_element_size = 0;
-    $pillar_size = 0;
-    $wire_size = 0;
-
-    $door_price = 0;
-    $corner_element_price = 0;
-    $pillar_price = 0;
-    $wire_price = 0;
-
-    // file handling
-    $file_handle = fopen("consts.txt", "rb");
-
-    while (!feof($file_handle)) {
-
-        $line_of_text = fgets($file_handle);
-        $parts = explode('=', $line_of_text);
-
-        switch ($parts[0]) {
-            case "door":
-                $door_size = (int)$parts[1];
-                $door_price = (int)$parts[2];
-                break;
-            case "corner_element":
-                $corner_element_size = (int)$parts[1];
-                $corner_element_price = (int)$parts[2];
-                break;
-            case "pillar":
-                $pillar_size = (int)$parts[1];
-                $pillar_price = (int)$parts[2];
-                break;
-            case "wire":
-                $wire_size = (int)$parts[1];
-                $wire_price = (int)$parts[2];
-                break;
-        }
-    }
-    fclose($file_handle);
-
-
-    // calculating
-    $perimeter = perimeter($a1, $a2, $d1, $d2, $c1, $c2);
-    $remainder = $perimeter - (($door_size * 4) + ($corner_element_size * 4) + ($pillar_size * 8));
-    $wire_pillar = $remainder / 2.2;
-    $ceil_wire_pillar = ceil($wire_pillar);
-    $eur = (4 * $door_price) + (4 * $corner_element_price) + ((8 + $ceil_wire_pillar) * $pillar_price) + ($ceil_wire_pillar * $wire_price);
 }
 
 ?>
@@ -135,10 +138,10 @@ if (isset($_GET['submit'])) {
         </div>
         <br>
         <div>
-            5. Total cost: <?php if ($eur == "") {
+            5. Total cost: <?php if ($eur == "" || $perimeter == 0) {
                                 echo "empty value";
                             } else {
-                                echo $eur . " EUR<br>"; //. 4 * $door_price . " door price<br>" . 4 * $corner_element_price . " corner element price<br>" . (8 + $ceil_wire_pillar) * $pillar_price . " pillar price<br>" . $ceil_wire_pillar * $wire_price . " wire price";
+                                echo $eur . " EUR<br>";
                             } ?>
             <br>
         </div>

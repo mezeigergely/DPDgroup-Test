@@ -13,10 +13,10 @@ $eur = 0;
 
 function emptyOrNot($n1, $n2)
 {
-    if ($n1 == "" || $n2 == "") {
-        echo "empty values";
-    } else {
+    if (is_numeric($n1) && is_numeric($n2)) {
         echo $n1 . ", " . $n2;
+    } else {
+        echo "0, 0";
     }
 }
 
@@ -45,20 +45,28 @@ function distBetweenTwoPoints($n1, $n2, $p1, $p2)
 
 function perimeter($f1_1, $f1_2, $f2_1, $f2_2, $a1_1, $a1_2)
 {
-    $firtsSide = distBetweenTwoPoints($f1_1, $f1_2, $f2_1, $f2_2,);
-    $secSide = distBetweenTwoPoints($f1_1, $f1_2, $a1_1, $a1_2);
+    if ($f1_1 == "" || $f1_2 == "" || $f2_1 == "" || $f2_2 == "" || $a1_1 == "" || $a1_2 == "") {
+        return 0;
+    } else {
+        $firtsSide = distBetweenTwoPoints($f1_1, $f1_2, $f2_1, $f2_2,);
+        $secSide = distBetweenTwoPoints($f1_1, $f1_2, $a1_1, $a1_2);
 
-    $total = 2 * ($firtsSide + $secSide);
+        $total = 2 * ($firtsSide + $secSide);
 
-    return number_format($total, 2, '.', '');
+        return number_format($total, 2, '.', '');
+    }
 }
 
 function area($f1_1, $f1_2, $f2_1, $f2_2, $a1_1, $a1_2)
 {
-    $firtsSide = distBetweenTwoPoints($f1_1, $f1_2, $f2_1, $f2_2,);
-    $secSide = distBetweenTwoPoints($f1_1, $f1_2, $a1_1, $a1_2);
+    if ($f1_1 == "" || $f1_2 == "" || $f2_1 == "" || $f2_2 == "" || $a1_1 == "" || $a1_2 == "") {
+        return 0;
+    } else {
+        $firtsSide = distBetweenTwoPoints($f1_1, $f1_2, $f2_1, $f2_2,);
+        $secSide = distBetweenTwoPoints($f1_1, $f1_2, $a1_1, $a1_2);
 
-    $total = $firtsSide * $secSide;
+        $total = $firtsSide * $secSide;
 
-    return number_format($total, 2, '.', '');
+        return number_format($total, 2, '.', '');
+    }
 }
