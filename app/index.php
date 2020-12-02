@@ -62,10 +62,10 @@ if (isset($_GET['submit'])) {
 
                 // calculating
                 $perimeter = perimeter($a1, $a2, $d1, $d2, $c1, $c2);
-                $remainder = $perimeter - (($door_size * 4) + ($corner_element_size * 4) + ($pillar_size * 8));
+                $remainder = $perimeter - (($door_size * 4) + ($corner_element_size * 4));
                 $wire_pillar = $remainder / 2.2;
                 $ceil_wire_pillar = ceil($wire_pillar);
-                $eur = (4 * $door_price) + (4 * $corner_element_price) + ((8 + $ceil_wire_pillar) * $pillar_price) + ($ceil_wire_pillar * $wire_price);
+                $eur = (4 * $door_price) + (4 * $corner_element_price) + ($ceil_wire_pillar * $pillar_price) + ($ceil_wire_pillar * $wire_price);
             } else {
                 echo "wrong input(s)";
             }
